@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-box"></i>
+                Inventory Pro
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('add-item')">
+                    <i class="fas fa-plus"></i> Add Item
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('inventory')">
+                    <i class="fas fa-boxes"></i> Inventory
+                </a>
+                <a href="#" class="nav-link" onclick="showSection('reports')">
+                    <i class="fas fa-file-alt"></i> Reports
+                </a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <i class="fas fa-box fa-2x"></i>
+                    <div class="stat-value" data-stat="totalItems">0</div> <!-- Set initial value to 0 -->
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    <div class="stat-value" data-stat="lowStockItems">0</div> <!-- Set initial value to 0 -->
+                    <div class="stat-label">Low Stock Items</div>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <div class="stat-value" data-stat="totalValue">$0</div> <!-- Set initial value to $0 -->
+                    <div class="stat-label">Total Value</div>
+                </div>
+                <div class="card stat-card">
+                    <i class="fas fa-exchange-alt fa-2x"></i>
+                    <div class="stat-value" data-stat="transactions">0</div> <!-- Set initial value to 0 -->
+                    <div class="stat-label">Today's Transactions</div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Recent Transactions Table -->
+            <div class="card table-card">
+                <h2>Recent Transactions</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-tbody">
+                            <!-- Transaction rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Item Section -->
+        <div id="add-item" class="section" style="display: none;">
+            <div class="card form-card">
+                <h2>Add New Item</h2>
+                <form id="add-item-form">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" name="productName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>SKU</label>
+                            <input type="text" name="sku" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Food">Food</option>
+                                <option value="Furniture">Furniture</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" name="price" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stock Level</label>
+                            <input type="number" name="stockLevel" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Supplier</label>
+                            <input type="text" name="supplier" required>
+                        </div>
+                        
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Item</button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Inventory Section -->
+        <div id="inventory" class="section" style="display: none;">
+            <div class="card">
+                <div class="inventory-header">
+                    <h2>Current Inventory</h2>
+                    <div class="inventory-actions">
+                        
+                        <select id="category-filter">
+                            <option value="all">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Food">Food</option>
+                            <option value="Furniture">Furniture</option>
+                        </select>
+                        <button id="export-inventory-btn" class="btn btn-primary" onclick="exportToCSV('inventory')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>SKU</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody">
+                            <!-- Inventory rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <!-- Reports Section -->
+<div id="reports" class="section" style="display: none;">
+    <div class="card form-card">
+        <h2>Generate Reports</h2>
+        <form id="report-form">
+            <div class="form-group">
+                <label>Report Type</label>
+                <select name="reportType" id="reportType" required>
+                    <option value="inventory">Inventory Status</option>
+                    <option value="transactions">Transaction History</option>
+                    <option value="lowstock">Low Stock Items</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" >Generate Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <script src="index.js"></script>
+</body>
+</html>
